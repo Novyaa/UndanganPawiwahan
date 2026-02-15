@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "undigi-invitation"
+  },
+  "targets": {
+    "undigi-invitation": {
+      "hosting": {
+        "undigi": [
+          "undigi-invitation"
+        ],
+        "undigido": [
+          "undigi-invitation-do"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import HomePage from "./HomePage";
+import HalamanInti from "./HalamanInti";
 
 export default function Page() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <HomePage />
+      <HalamanInti />
     </Suspense>
   );
 }
