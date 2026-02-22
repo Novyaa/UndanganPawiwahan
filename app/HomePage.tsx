@@ -254,12 +254,6 @@ export default function HomePage() {
               onChange={(e) => setNamaTamu(e.target.value)}
               className="px-3 py-2 rounded border text-center w-full"
             />
-            <button
-              onClick={handleSubmitNama}
-              className="px-4 py-2 bg-[#6B2121] text-white rounded"
-            >
-              Simpan Nama
-            </button>
           </div>
         )}
 
