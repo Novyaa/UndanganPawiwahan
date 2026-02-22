@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { db } from "@/firebase";
 import {
   collection,
@@ -35,9 +35,7 @@ export default function HalamanInti() {
   const flowerTopRef = useRef<HTMLImageElement | null>(null);
   const lineRef = useRef<HTMLImageElement | null>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);
-
-  const params = useSearchParams();
-  const namaTamu = params.get("nama") || "";
+  const [namaTamu, setNamaTamu] = useState("");
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -46,7 +44,44 @@ export default function HalamanInti() {
   const [konfirmasi, setKonfirmasi] = useState<
     "Hadir" | "Tidak Hadir" | "Ragu" | ""
   >("");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+    } else {
+      audio.play();
+      setIsPlaying(true);
+    }
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.volume = 0.5;
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          console.log("Autoplay diblokir browser");
+        });
+    }
+  }, []);
+  useEffect(() => {
+    const savedName = localStorage.getItem("guestName");
+    if (savedName) {
+      setNamaTamu(savedName);
+      setNama(savedName);
+    }
+  }, []);
   /* ====================== SUBMIT ====================== */
   const handleKirim = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,8 +119,6 @@ export default function HalamanInti() {
     }
   };
 
-  
-
   /* ====================== GSAP ====================== */
   useEffect(() => {
     if (!containerRef.current) return;
@@ -113,7 +146,6 @@ export default function HalamanInti() {
         once: true,
       });
     });
-    
 
     return () => ScrollTrigger.getAll().forEach((t) => t.kill());
   }, []);
@@ -144,7 +176,7 @@ export default function HalamanInti() {
   }, []);
 
   /* ====================== COUNTDOWN ====================== */
-  const targetDate = new Date("2026-03-05T14:00:00+08:00");
+  const targetDate = new Date("2026-03-20T14:00:00+08:00");
 
   const [countdown, setCountdown] = useState({
     days: 0,
@@ -272,30 +304,31 @@ export default function HalamanInti() {
           >
             &
           </span>
-          <div className="mt-8">
+          <div className="mt-10">
             <div className="relative mb-18 z-10">
               <span
                 className="absolute inset-0 flex items-center justify-center
                  text-7xl md:text-9xl
-                 font-allison text-yellow-400 opacity-30 mb-38"
+                 font-allison text-yellow-400 opacity-45 mb-90"
               >
                 Danan
               </span>
               <div>
-                <h2 className="relative font-aleo text-3xl text-[#F3D9B1] font-bold">
-                  Nama Lengkap
+                <h2 className="relative font-aleo text-xl text-[#F3D9B1] font-bold">
+                  dr. ANAK AGUNG GD PUTRA DANANJAYA, M.Biomed, SpB
                 </h2>
 
-                <span className="relative font-aleo italic text-sm text-[#E6C79C] mt-2">
-                  Putra ke ... dari pasangan
+                <span className="relative font-aleo italic text-md text-[#E6C79C] mt-2">
+                  Anak ketiga dari pasangan
                 </span>
 
-                <h2 className="relative font-aleo text-2xl text-[#F3D9B1]">
-                  Nama Lengkap
+                <h2 className="relative font-aleo text-lg text-[#F3D9B1]">
+                  Ir. Anak Agung Gede Dalem Sudarsana, MS & Anak Agung Istri
+                  Kartini, SH
                 </h2>
 
-                <span className="relative font-aleo text-sm text-[#E6C79C] mt-2">
-                  Pemecutan, Kec. Denpasar Barat., Kota Denpasar, Bali
+                <span className="relative font-aleo text-md text-[#E6C79C] mt-2">
+                  Puri Kelodan, Banjar Tengah Kauh, Peliatan, Ubud
                 </span>
               </div>
             </div>
@@ -304,25 +337,26 @@ export default function HalamanInti() {
               <span
                 className="absolute inset-0 flex items-center justify-center
                  text-7xl md:text-9xl
-                 font-allison text-yellow-400 opacity-30 mb-38"
+                 font-allison text-yellow-400 opacity-45 mb-90"
               >
                 Oka
               </span>
 
-              <h2 className="relative font-aleo text-3xl text-[#F3D9B1] font-bold">
-                Nama Lengkap
+              <h2 className="relative font-aleo text-xl text-[#F3D9B1] font-bold">
+                dr. ANAK AGUNG AYU OKA KUSUMA DEWI, M.Biomed, SpB
               </h2>
 
-              <span className="relative font-aleo italic text-sm text-[#E6C79C] mt-2">
-                Putri ke ... dari pasangan
+              <span className="relative font-aleo italic text-md text-[#E6C79C] mt-2">
+                Anak kedua dari pasangan
               </span>
 
-              <h2 className="relative font-aleo text-2xl text-[#F3D9B1]">
-                Nama Lengkap
+              <h2 className="relative font-aleo text-lg text-[#F3D9B1]">
+                dr. I Gusti Putu Gde Arsana, SpOG & dr. Anak Agung Ayu Mas
+                Ranidewi, SpTHT-BKL, MARS
               </h2>
 
-              <span className="relative font-aleo text-sm text-[#E6C79C] mt-2">
-                Pemecutan, Kec. Denpasar Barat., Kota Denpasar, Bali
+              <span className="relative font-aleo text-md text-[#E6C79C] mt-2">
+                Jero Dauh Buah - Puri Peguyangan Denpasar
               </span>
             </div>
           </div>
@@ -363,7 +397,7 @@ export default function HalamanInti() {
         </h2>
 
         {/* CARD UTAMA */}
-        <div className="fade-up bg-[#E6CFA9] rounded-2xl shadow-lg p-8 max-w-md w-sm mb-12">
+        <div className="fade-up bg-[#E6CFA9] rounded-2xl shadow-lg p-8 max-w-md w-md mb-12">
           <div className="absolute top-[-25px] left-1/2 transform -translate-x-1/2">
             <Image
               src="/assets/IDOwithDO.svg"
@@ -372,31 +406,28 @@ export default function HalamanInti() {
               height={200}
             />
           </div>
-          <h3 className="text-2xl font-aleo font-semibold mb-1 mt-8 text-[#613A3A]">
+          <h3 className="text-2xl font-aleo font-semibold mb-1 mt-10 text-[#613A3A]">
             PAWIWAHAN
           </h3>
-          <p className="mb-1 font-aleo text-md italic text-[#2E0808]">
-            Senin, 05 Januari 2026
+          <p className="mb-1 font-aleo text-lg italic text-[#2E0808]">
+            Jumat, 20 Maret 2026
           </p>
-          <p className="mb-1 font-aleo text-md italic text-[#2E0808]">
-            14.00 WITA – Selesai
+          <p className="mb-1 font-aleo text-lg italic text-[#2E0808]">
+            14.00 - 18.00 WITA – Selesai
           </p>
 
           <p className="text-sm mb-1 font-aleo text-md italic font-light text-[#2E0808]">
             Bertempat di
           </p>
           <p className="mb-3 font-aleo text-md italic font-semibold text-[#2E0808]">
-            Ubud, Gianyar, Bali
+            Puri Kelodan, Banjar Tengah Kauh, Peliatan, Ubud
           </p>
 
           <button
             onClick={() =>
-              window.open(
-                "https://www.google.com/maps/search/Ubud,+Gianyar,+Bali",
-                "_blank",
-              )
+              window.open("https://maps.app.goo.gl/Dz9WkzgRv6DsvV376", "_blank")
             }
-            className="px-6 py-2 bg-[#6B2121] text-[#FE6CFA9] rounded-full mb-3 font-aleo text-md hover:opacity-90 transition"
+            className="px-6 py-3 bg-[#6B2121] text-[#FE6CFA9] rounded-lg mb-2 font-aleo text-lg hover:opacity-95 transition"
           >
             Map Lokasi Acara
           </button>
@@ -421,7 +452,8 @@ export default function HalamanInti() {
             </p>
             <p className="mt-2 font-bold italic">kami yang berbahagia</p>
             <p className="mt-1 font-semibold italic">
-              Kel. I Wayan & Kel. I Gede
+              Kel. Ir. Anak Agung Gede Dalem Sudarsana, MS <br /> & Kel. dr. I
+              Gusti Putu Gde Arsana, SpOG
             </p>
           </div>
         </div>
@@ -545,6 +577,18 @@ export default function HalamanInti() {
           )}
         </div>
       </section>
+      {/* AUDIO */}
+      <audio ref={audioRef} loop>
+        <source src="/assets/Song.mp3" type="audio/mpeg" />
+      </audio>
+
+      {/* MUSIC BUTTON */}
+      <button
+        onClick={toggleMusic}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#E6CFA9] text-[#6B2121] shadow-lg flex items-center justify-center hover:scale-105 transition"
+      >
+       {isPlaying ? <Volume2 size={22} /> : <VolumeX size={22} />}
+      </button>
     </div>
   );
 }

@@ -5,11 +5,11 @@ import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
 
-
 export default function HomePage() {
-  const params = useSearchParams();
-  const namaTamu = params.get("nama") || "Tamu";
   const router = useRouter();
+  const [namaTamu, setNamaTamu] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -96,9 +96,27 @@ export default function HomePage() {
       duration: 1.3,
       ease: "power4.inOut",
       onComplete: () => {
-        router.push(`/undangan?nama=${namaTamu}`);
+        router.push(`/undangan`);
       },
     });
+  };
+
+  useEffect(() => {
+    const savedName = localStorage.getItem("guestName");
+    if (savedName) {
+      setNamaTamu(savedName);
+      setIsSubmitted(true);
+    } else {
+      setIsModalOpen(true);
+    }
+  }, []);
+
+  const handleSubmitNama = () => {
+    if (namaTamu.trim() !== "") {
+      localStorage.setItem("guestName", namaTamu);
+      setIsSubmitted(true);
+      setIsModalOpen(false);
+    }
   };
 
   return (
@@ -220,12 +238,30 @@ export default function HomePage() {
           Bapak/Ibu/Saudara/i
         </p>
 
-        <p
-          className="text-3xl font-semibold"
-          style={{ fontFamily: "Crimson Text, serif" }}
-        >
-          {namaTamu}
-        </p>
+        {isSubmitted ? (
+          <p
+            className="text-3xl font-semibold"
+            style={{ fontFamily: "Crimson Text, serif" }}
+          >
+            {namaTamu || "Tamu Undangan"}
+          </p>
+        ) : (
+          <div className="flex flex-col gap-2 items-center">
+            <input
+              type="text"
+              placeholder="Masukkan Nama Anda"
+              value={namaTamu}
+              onChange={(e) => setNamaTamu(e.target.value)}
+              className="px-3 py-2 rounded border text-center w-full"
+            />
+            <button
+              onClick={handleSubmitNama}
+              className="px-4 py-2 bg-[#6B2121] text-white rounded"
+            >
+              Simpan Nama
+            </button>
+          </div>
+        )}
 
         <button
           onClick={handleEnter}
@@ -235,6 +271,34 @@ export default function HomePage() {
           Buka Undangan
         </button>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-[#E6CFA9] text-[#6B2121] rounded-lg p-6 w-[90%] max-w-sm text-center shadow-xl border border-black/70">
+            <h2
+              className="text-2xl font-semibold mb-4"
+              style={{ fontFamily: "Crimson Text, serif" }}
+            >
+              Masukkan Nama Anda
+            </h2>
+
+            <input
+              type="text"
+              placeholder="Nama Lengkap"
+              value={namaTamu}
+              onChange={(e) => setNamaTamu(e.target.value)}
+              className="w-full px-4 py-2 rounded border mb-4 text-center"
+            />
+
+            <button
+              onClick={handleSubmitNama}
+              className="w-full bg-[#6B2121] text-[#F5E6CB] py-2 rounded-lg hover:bg-[#581818] transition"
+            >
+              Simpan & Lanjutkan
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
