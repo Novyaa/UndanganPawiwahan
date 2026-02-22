@@ -397,7 +397,7 @@ export default function HalamanInti() {
         </h2>
 
         {/* CARD UTAMA */}
-        <div className="fade-up bg-[#E6CFA9] rounded-2xl shadow-lg p-8 max-w-md w-md mb-12">
+        <div className="fade-up bg-[#E6CFA9] rounded-2xl shadow-lg p-8 max-w-md w-sm mb-12">
           <div className="absolute top-[-25px] left-1/2 transform -translate-x-1/2">
             <Image
               src="/assets/IDOwithDO.svg"
